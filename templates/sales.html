@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Sales Management | The General Store</title>
+
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+
+<body>
+
+    <div class="container">
+
+        <main class="main-content">
+
+            <!-- Page Header -->
+            <header class="page-header">
+                <div>
+                    <h1>Sales Management</h1>
+                    <p>Record transactions and monitor your store's sales.</p>
+                </div>
+
+                <a href="{{ url_for('dashboard') }}" class="back-button">
+                    ← Back to Dashboard
+                </a>
+            </header>
+
+
+            <!-- Record Sale Section -->
+            <section class="dashboard-section">
+
+                <h2>Record a New Sale</h2>
+                <p>Select a product and enter the quantity being sold.</p>
+
+               <!-- Error and Success Messages -->
+{% with messages = get_flashed_messages(with_categories=true) %}
+    {% if messages %}
+        {% for category, message in messages %}
+            <div class="{{ category }}-message">
+                {{ message }}
+            </div>
+        {% endfor %}
+    {% endif %}
+{% endwith %}
+
+                <form method="POST" action="{{ url_for('add_sale') }}">
+
+                    <div class="form-grid">
+
+                        <div class="form-group">
+                            <label>Select Product</label>
+
+                            <select name="product_id" required>
+                                {% for product in products %}
+                                    <option value="{{ product.product_id }}">
+                                        {{ product.product_name }}
+                                        - R{{ "%.2f"|format(product.price) }}
+                                        (Stock: {{ product.quantity }})
+                                    </option>
+                                {% endfor %}
+                            </select>
+                        </div>
+
+                        <div class="form-group">
+                            <label>Quantity Sold</label>
+
+                            <input type="number"
+                                   name="quantity_sold"
+                                   min="1"
+                                   placeholder="Enter quantity"
+                                   required>
+                        </div>
+
+                    </div>
+
+                    <button type="submit">Record Sale</button>
+
+                </form>
+
+            </section>
+
+
+            <!-- Sales History Section -->
+            <section class="dashboard-section">
+
+                <h2>Sales History</h2>
+                <p>View previously recorded sales transactions.</p>
+
+                <table>
+
+                    <thead>
+                        <tr>
+                            <th>Sale ID</th>
+                            <th>Product</th>
+                            <th>Quantity Sold</th>
+                            <th>Unit Price</th>
+                            <th>Total Amount</th>
+                            <th>Date</th>
+                        </tr>
+                    </thead>
+
+                    <tbody>
+
+                        {% for sale in sales %}
+
+                        <tr>
+                            <td>{{ sale.sale_id }}</td>
+                            <td>{{ sale.product_name }}</td>
+                            <td>{{ sale.quantity_sold }}</td>
+                            <td>R{{ "%.2f"|format(sale.unit_price) }}</td>
+                            <td>R{{ "%.2f"|format(sale.total_amount) }}</td>
+                            <td>{{ sale.sale_date }}</td>
+                        </tr>
+
+                        {% else %}
+
+                        <tr>
+                            <td colspan="6">No sales transactions recorded yet.</td>
+                        </tr>
+
+                        {% endfor %}
+
+                    </tbody>
+
+                </table>
+
+            </section>
+
+        </main>
+
+    </div>
+
+</body>
+</html>

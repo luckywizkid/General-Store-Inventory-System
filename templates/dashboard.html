@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>The General Store | Dashboard</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+
+<body>
+
+    <div class="container">
+
+        <aside class="sidebar">
+            <h2>The General Store</h2>
+            <p class="store-label">MANAGEMENT SYSTEM</p>
+
+           <nav>
+    <a href="{{ url_for('dashboard') }}" class="active">Dashboard</a>
+    <a href="{{ url_for('products') }}">Products</a>
+    <a href="{{ url_for('suppliers') }}">Suppliers</a>
+    <a href="{{ url_for('sales') }}">Sales</a>
+    <a href="{{ url_for('inventory') }}">Inventory</a>
+    <a href="{{ url_for('reports') }}">Reports</a>
+</nav>
+
+<div class="sidebar-menu">
+    <a href="{{ url_for('feedback') }}">Customer Feedback</a>
+    <a href="{{ url_for('manage_feedback') }}">Manage Feedback</a>
+</div>
+
+        </aside>
+
+        <main class="main-content">
+            {% block content %}
+
+            <header>
+                <div>
+                    <h1>Dashboard</h1>
+                    <p>Welcome to The General Store Management System.</p>
+                </div>
+                <span class="admin">Administrator</span>
+            </header>
+
+            <section class="summary-cards">
+
+                <div class="card">
+                    <h3>Total Products</h3>
+                    <p>{{ total_products }}</p>
+                </div>
+
+                <div class="card">
+                    <h3>Total Sales</h3>
+                    <p>R{{ "%.2f"|format(total_sales) }}</p>
+                </div>
+
+                <div class="card">
+                    <h3>Low Stock</h3>
+                    <p>{{ low_stock }}</p>
+                </div>
+
+                <div class="card">
+                    <h3>Suppliers</h3>
+                    <p>{{ total_suppliers }}</p>
+                </div>
+
+            </section>
+
+            <section class="dashboard-section">
+    <h2>Recent Sales</h2>
+
+    {% if recent_sales %}
+        <table>
+            <tr>
+                <th>Product</th>
+                <th>Quantity</th>
+                <th>Total</th>
+                <th>Date</th>
+            </tr>
+
+            {% for sale in recent_sales %}
+            <tr>
+                <td>{{ sale.product_name }}</td>
+                <td>{{ sale.quantity_sold }}</td>
+                <td>R{{ "%.2f"|format(sale.total_amount) }}</td>
+                <td>{{ sale.sale_date }}</td>
+            </tr>
+            {% endfor %}
+        </table>
+    {% else %}
+        <p>No sales transactions recorded yet.</p>
+    {% endif %}
+</section>
+
+            <section class="dashboard-section">
+    <h2>Inventory Overview</h2>
+
+    {% if inventory_overview %}
+        <table>
+            <tr>
+                <th>Product</th>
+                <th>Quantity</th>
+                <th>Minimum Stock</th>
+                <th>Status</th>
+            </tr>
+
+            {% for product in inventory_overview %}
+            <tr>
+                <td>{{ product.product_name }}</td>
+                <td>{{ product.quantity }}</td>
+                <td>{{ product.min_quantity }}</td>
+                <td>
+                    {% if product.quantity <= product.min_quantity %}
+                        <span class="stock-badge low-stock">Low Stock</span>
+                    {% else %}
+                        <span class="stock-badge in-stock">In Stock</span>
+                    {% endif %}
+                </td>
+            </tr>
+            {% endfor %}
+        </table>
+    {% else %}
+        <p>No inventory information available.</p>
+    {% endif %}
+</section>
+{% endblock %}
+        </main>
+
+    </div>
+
+</body>
+</html>

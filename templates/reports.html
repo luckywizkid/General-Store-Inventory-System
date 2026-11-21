@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Sales Reports - General Store</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+
+    <div class="container">
+        <div class="main-content">
+
+            <div class="page-header">
+                <div>
+                    <h1>Sales Reports</h1>
+                    <p>Review daily and weekly sales performance.</p>
+                </div>
+
+                <a href="{{ url_for('dashboard') }}" class="back-button">
+                    Back to Dashboard
+                </a>
+            </div>
+
+            <div class="dashboard-section">
+                <h2>Sales Summary</h2>
+
+                <div class="form-grid">
+                    <div class="stat-card">
+                        <h3>Daily Revenue</h3>
+                        <p>R{{ "%.2f"|format(daily_revenue) }}</p>
+                    </div>
+
+                    <div class="stat-card">
+                        <h3>Weekly Revenue</h3>
+                        <p>R{{ "%.2f"|format(weekly_revenue) }}</p>
+                    </div>
+
+                    <div class="stat-card">
+                        <h3>Total Items Sold</h3>
+                        <p>{{ total_items_sold }}</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="dashboard-section">
+                <h2>Sales Transaction History</h2>
+
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Sale ID</th>
+                            <th>Product</th>
+                            <th>Quantity</th>
+                            <th>Total Amount</th>
+                            <th>Date</th>
+                        </tr>
+                    </thead>
+
+                    <tbody>
+                        {% for sale in sales %}
+                        <tr>
+                            <td>{{ sale['sale_id'] }}</td>
+                            <td>{{ sale['product_name'] }}</td>
+                            <td>{{ sale['quantity_sold'] }}</td>
+                            <td>R{{ "%.2f"|format(sale['total_amount']) }}</td>
+                            <td>{{ sale['sale_date'] }}</td>
+                        </tr>
+                        {% else %}
+                        <tr>
+                            <td colspan="5">No sales transactions recorded yet.</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+
+            </div>
+
+        </div>
+    </div>
+
+</body>
+</html>
